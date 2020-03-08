@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="description" content="TwilioQuest starter code">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>foodfood!</title>
+
+    <!-- A little CSS to make our page prettier -->
+    <link href="//fonts.googleapis.com/css?family=Press+Start+2P" 
+        rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+
+    <!-- Include jQuery to help us with some UI stuff -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- A simple UI to test our Twilio back end -->
+    <div id="content">
+        <div id="flash" style="display:none;">
+            <p><span id="flash-message"></span> <a href="#">Close</a></p>
+        </div>
+
+        <div id="welcome">
+            <h1><span>ORDER CONFIRMED </span>Your food is being prepared</h1>
+            <p>
+                yummy yummy yumyum
+            </p>
+        </div>
+
+        <h1>Here's a map</h1>
+        </form>
+    </div>
+    <div id="footer">
+        <span>FOODFOODFOODFOODFOOD</span>
+        <p>
+            Made with <img src="/images/heart.gif" alt="heart"> by your pals 
+            <a href="http://www.twilio.com">@twilio</a>.
+        </p>
+    </div>
+
+    <!-- Some dirty JavaScript to help drive our UI -->
+    <script src="/javascripts/ui.js"></script>
+    <!-- Some ajax magic to hit our back end and make calls/send messages -->
+    <script src="/javascripts/form.js"></script>
+</body>
+</html>
