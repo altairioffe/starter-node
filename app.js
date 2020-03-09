@@ -39,7 +39,7 @@ app.get('/', function(req, res, next) {
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
   client.messages.create({
-    to: '+12266788585',
+    to: '+16474445945',
     from: TWILIO_PHONE_NUMBER,
     body: req.body.message
     //'New Order Text Sent!'
