@@ -70,11 +70,13 @@ app.get('/confirmed', function(req, res, next) {
 
 
 //Helper FUNCTION, send text reminding customer to leave CAN BE TEXT OR CALL
-const remindCustomerToLeave = function() {
+const remindCustomerToLeave = function(timeUntilCooked, travelTime) {
+  let reminderTime = timeUntilCooked - travelTime;
+
   client.messages.create({
     to: '+12266788585', //CHANGE TO ADD 2nd PHONE NUMBER;
     from: TWILIO_PHONE_NUMBER,
-    body: 'You should leave to pick up your order now!' 
+    body: `You should leave to pick up your order in ${reminderTime} minutes!`
   }).then((message)=> console.log('FROM REMINDER .THEN FUNCTION: ', message.body));
 };
 
@@ -82,7 +84,9 @@ const remindCustomerToLeave = function() {
 
 //LISTEN FOR SMS  **NEED TO CONFIGURE ROUTE ON VALID DOMAIN / SERVER / DOES NOT WORK ON LOCALHOST
 app.post('/inbound', (req, res) => {
-  remindCustomerToLeave();
+  const timeUntilCooked = req.body.Body
+  const travelTime = 5
+  remindCustomerToLeave(timeUntilCooked, travelTime);
 
   const twiml = new MessagingResponse();
 
