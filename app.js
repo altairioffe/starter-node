@@ -83,11 +83,13 @@ const remindCustomerToLeave = function() {
 //LISTEN FOR SMS  **NEED TO CONFIGURE ROUTE ON VALID DOMAIN / SERVER / DOES NOT WORK ON LOCALHOST
 app.post('/inbound', (req, res) => {
   remindCustomerToLeave();
+
   const twiml = new MessagingResponse();
 
   twiml.message('Thanks for confirming ETA!');
   res.writeHead(200, {'Content-Type': 'text/xml'});
-  console.log('TRIGGERED FROM INBOUND ROUTE: ', req.Body);
+  console.log('TRIGGERED FROM INBOUND ROUTE!!: ', req.body.body);
+
   res.end(twiml.toString());
 
 });
