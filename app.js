@@ -116,44 +116,39 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-console.log(twilio)
+//console.log(twilio)
 module.exports = app;
 
 
 ////////
 
 
-let order = {
-  item: {
-    quantity = 0
-
-  },
-  subtotal,
+// let order = {
+//   item: {
+//     quantity: 0
+//   },
+//   subtotal
   
-}
+// };
+
+// const increaseItemQuantity = function(item) {
+//   order[item].quantity++;
+//   order[subtotal] = order.subtotal += item.price;
+// };
 
 
+// const decreaseItemQuantity = function(item) {
+//   if (order[item].quantity > 0) {
+//     order[item].quantity--;
+//     order[subtotal] = order.subtotal -= item.price;
+//   }
+// };
 
-
-
-const increaseItemQuantity = function(item) {
-  order[item].quantity++;
-  order[subtotal] = order.subtotal += item.price;
-};
-
-
-const decreaseItemQuantity = function(item) {
-  if (order[item].quantity > 0) {
-    order[item].quantity--;
-    order[subtotal] = order.subtotal -= item.price;
-  }
-};
-
-const generateRandomString = function() {
-  let random = [];
-  let characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  for (let i = 0; i < 6; i++) {
-    random.push(characters[(Math.floor(Math.random() * 18))]);
-  }
-  return random.join('');
-};
+// const generateRandomString = function() {
+//   let random = [];
+//   let characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+//   for (let i = 0; i < 6; i++) {
+//     random.push(characters[(Math.floor(Math.random() * 18))]);
+//   }
+//   return random.join('');
+// };
