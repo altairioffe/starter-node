@@ -41,7 +41,7 @@ app.post('/message', function(req, res, next) {
   client.messages.create({
     to: '+16474445945',
     from: TWILIO_PHONE_NUMBER,
-    body: req.body.message
+    body: `New order: ${req.body.message}. ***Please respond with ETA as numerical value in MINUTES.`
     //'New Order Text Sent!'
   }).then(function(message) {
     // When we get a response from Twilio, respond to the HTTP POST request
@@ -95,7 +95,6 @@ app.post('/inbound', (req, res) => {
   console.log('TRIGGERED FROM INBOUND ROUTE!!: ', req.body.Body);
 
   res.end(twiml.toString());
-
 });
 
 // Create a TwiML document to provide instructions for an outbound call
