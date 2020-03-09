@@ -67,13 +67,30 @@ app.get('/confirmed', function(req, res, next) {
   res.render('confirmation');
 });
 
+
+
+//Helper FUNCTION, send text reminding customer to leave CAN BE TEXT OR CALL
+const remindCustomerToLeave = function() {
+  client.messages.create({
+    to: '+12266788585', //CHANGE TO ADD 2nd PHONE NUMBER;
+    from: TWILIO_PHONE_NUMBER,
+    body: 'You should leave to pick up your order now!' 
+  }).then((message)=> console.log('FROM REMINDER .THEN FUNCTION: ', message.sid));
+};
+
+
+
 //LISTEN FOR SMS  **NEED TO CONFIGURE ROUTE ON VALID DOMAIN / SERVER / DOES NOT WORK ON LOCALHOST
 app.post('/inbound', (req, res) => {
+  
+  remindCustomerToLeave();
   const twiml = new MessagingResponse();
 
   twiml.message('Thanks for confirming ETA!');
   res.writeHead(200, {'Content-Type': 'text/xml'});
+  console.log('TRIGGERED FROM INBOUND ROUTE: ', req.body);
   res.end(twiml.toString());
+
 });
 
 // Create a TwiML document to provide instructions for an outbound call
@@ -91,14 +108,8 @@ app.post('/hello', function(req, res, next) {
   res.send(twiml.toString());
 });
 
-//CAN BE TEXT OR CALL
-const remindCustomerToLeave = function() {
-  client.messages.create({
-    to: '+12266788585', //CHANGE TO ADD 2nd PHONE NUMBER;
-    from: TWILIO_PHONE_NUMBER,
-    body: 'You should leave to pick up your order now!' 
-  }).then((message)=> console.log(message.sid));
-};
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
