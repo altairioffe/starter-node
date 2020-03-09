@@ -42,7 +42,7 @@ app.get('/', function(req, res, next) {
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
   client.messages.create({
-    to: '+16474445945',
+    to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
     body: `New order: ${req.body.message}. ***Please respond with ETA as numerical value in MINUTES.`
     //'New Order Text Sent!'
@@ -73,17 +73,30 @@ app.get('/confirmed', function(req, res, next) {
 
 
 //Helper FUNCTION, send text reminding customer to leave CAN BE TEXT OR CALL
-const remindCustomerToLeave = function(timeUntilCooked, travelTime) {
+const confirmCustomerETA = function(reminderTime) {
   
-  let reminderTime = timeUntilCooked - travelTime;
-
   client.messages.create({
-    to: '+12266788585', 
+    to: CUSTOMER_PHONE_NUMBER, 
     from: TWILIO_PHONE_NUMBER,
     body: `You should leave to pick up your order in ${reminderTime} minutes!`
-  }).then((message)=> console.log('FROM REMINDER .THEN FUNCTION: ', message.body));
+  }).then((message)=> console.log('from customer ETA .THEN ', message.body));
 };
 
+// Send reminder SMS for customer to leave when timer is up:
+const timedReminderToLeave = function(reminderTime) {
+  setTimeout(() => {
+
+    console.log(`timer started for ${reminderTime} minutes`);
+
+    client.messages.create({
+      to: CUSTOMER_PHONE_NUMBER, 
+      from: TWILIO_PHONE_NUMBER,
+      body: `You should leave now to pick up your order!`
+    }).then((message)=> console.log('REMINDER TO LEAVE SENT: ', message.body));
+
+  }, reminderTime * 60000);
+
+};
 
 
 //LISTEN FOR SMS  **DO NOT CHANGE THIS ROUTE NAME** it is configured as the webhook in Twilio account
@@ -91,8 +104,10 @@ app.post('/inbound', (req, res) => {
 
   const timeUntilCooked = req.body.Body; //extraced from restaurant's SMS reply containing ETA in minutes
   const travelTime = 5; //hard-coded time to get to the restaurant, in minutes
+  let reminderTime = timeUntilCooked - travelTime;
 
-  remindCustomerToLeave(timeUntilCooked, travelTime);
+  confirmCustomerETA(reminderTime);
+  timedReminderToLeave(reminderTime)
 
   const twiml = new MessagingResponse();
 
