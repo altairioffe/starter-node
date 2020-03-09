@@ -1,21 +1,25 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var twilio = require('twilio');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const twilio = require('twilio');
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
+require('dotenv').config(); //to pull .env 
+
+//nodemodules/twilio/lib/rest/Twilio.js
 
 // Load configuration information from system environment variables.
-var TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID,
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN,
     TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
 // Create an authenticated client to access the Twilio REST API
-var client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
-var app = express();
+const app = express();
 
-// view engine setup
+// view engine setup 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -25,27 +29,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// render our home page
+// render home page
 app.get('/', function(req, res, next) {
   res.render('index');
 });
 
-// handle a POST request to send a text message. 
-// This is sent via ajax on our home page
+//1. CUSTOMER HITS CONFIRM ORDER / PAYMENT, creates post request to /message
+//2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
   client.messages.create({
-    to: req.body.to,
+    to: '+12266788585',
     from: TWILIO_PHONE_NUMBER,
-    body: 'Good luck on your Twilio quest!'
+    body: req.body.message
+    //'New Order Text Sent!'
   }).then(function(message) {
     // When we get a response from Twilio, respond to the HTTP POST request
-    res.send('Message is inbound!');
+    res.redirect('/confirmed');
   });
 });
 
-// handle a POST request to make an outbound call.
-// This is sent via ajax on our home page
+// OR 2.2 SERVER handles a POST request to make an outbound call (sent via ajax on our home page)
 app.post('/call', function(req, res, next) {
   // Use the REST client to send a text message
   client.calls.create({
@@ -58,11 +62,25 @@ app.post('/call', function(req, res, next) {
   });
 });
 
+//RENDERS ORDER CONFIRMATION PAGE W MAP
+app.get('/confirmed', function(req, res, next) {
+  res.render('confirmation');
+});
+
+//LISTEN FOR SMS  **NEED TO CONFIGURE ROUTE ON VALID DOMAIN / SERVER / DOES NOT WORK ON LOCALHOST
+app.post('/inbound', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  twiml.message('Thanks for confirming ETA!');
+  res.writeHead(200, {'Content-Type': 'text/xml'});
+  res.end(twiml.toString());
+});
+
 // Create a TwiML document to provide instructions for an outbound call
 app.post('/hello', function(req, res, next) {
   // Create a TwiML generator
-  var twiml = new twilio.twiml.VoiceResponse();
-  // var twiml = new twilio.TwimlResponse();
+  const twiml = new twilio.twiml.VoiceResponse();
+  // const twiml = new twilio.TwimlResponse();
   twiml.say('Hello there! You have successfully configured a web hook.');
   twiml.say('Good luck on your Twilio quest!', { 
       voice:'woman' 
@@ -72,6 +90,15 @@ app.post('/hello', function(req, res, next) {
   res.set('Content-Type','text/xml');
   res.send(twiml.toString());
 });
+
+//CAN BE TEXT OR CALL
+const remindCustomerToLeave = function() {
+  client.messages.create({
+    to: '+12266788585', //CHANGE TO ADD 2nd PHONE NUMBER;
+    from: TWILIO_PHONE_NUMBER,
+    body: 'You should leave to pick up your order now!' 
+  }).then((message)=> console.log(message.sid));
+};
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -89,4 +116,44 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+console.log(twilio)
 module.exports = app;
+
+
+////////
+
+
+let order = {
+  item: {
+    quantity = 0
+
+  },
+  subtotal,
+  
+}
+
+
+
+
+
+const increaseItemQuantity = function(item) {
+  order[item].quantity++;
+  order[subtotal] = order.subtotal += item.price;
+};
+
+
+const decreaseItemQuantity = function(item) {
+  if (order[item].quantity > 0) {
+    order[item].quantity--;
+    order[subtotal] = order.subtotal -= item.price;
+  }
+};
+
+const generateRandomString = function() {
+  let random = [];
+  let characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  for (let i = 0; i < 6; i++) {
+    random.push(characters[(Math.floor(Math.random() * 18))]);
+  }
+  return random.join('');
+};

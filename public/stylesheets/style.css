@@ -25,7 +25,7 @@ h1 {
 h3 {
     font-size:18px;
     margin:10px 0;
-    color:red;
+    color: green;
 }
 
 pre {
@@ -113,7 +113,7 @@ button:hover, input[type=button]:hover, input[type=submit]:hover {
 }
 
 #tabs li.current {
-    background-color: red;
+    background-color: green;
     color:white;
 }
 
@@ -142,7 +142,7 @@ button:hover, input[type=button]:hover, input[type=submit]:hover {
 }
 
 #footer span {
-    color:red;
+    color:green;
 }
 
 #footer p {
