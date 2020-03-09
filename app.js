@@ -75,20 +75,19 @@ const remindCustomerToLeave = function() {
     to: '+12266788585', //CHANGE TO ADD 2nd PHONE NUMBER;
     from: TWILIO_PHONE_NUMBER,
     body: 'You should leave to pick up your order now!' 
-  }).then((message)=> console.log('FROM REMINDER .THEN FUNCTION: ', message.sid));
+  }).then((message)=> console.log('FROM REMINDER .THEN FUNCTION: ', message.body));
 };
 
 
 
 //LISTEN FOR SMS  **NEED TO CONFIGURE ROUTE ON VALID DOMAIN / SERVER / DOES NOT WORK ON LOCALHOST
 app.post('/inbound', (req, res) => {
-  
   remindCustomerToLeave();
   const twiml = new MessagingResponse();
 
   twiml.message('Thanks for confirming ETA!');
   res.writeHead(200, {'Content-Type': 'text/xml'});
-  console.log('TRIGGERED FROM INBOUND ROUTE: ', req.body);
+  console.log('TRIGGERED FROM INBOUND ROUTE: ', req.Body);
   res.end(twiml.toString());
 
 });
