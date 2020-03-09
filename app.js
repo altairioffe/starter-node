@@ -88,7 +88,7 @@ app.post('/inbound', (req, res) => {
 
   twiml.message('Thanks for confirming ETA!');
   res.writeHead(200, {'Content-Type': 'text/xml'});
-  console.log('TRIGGERED FROM INBOUND ROUTE!!: ', req.body.body);
+  console.log('TRIGGERED FROM INBOUND ROUTE!!: ', req.body.Body);
 
   res.end(twiml.toString());
 
