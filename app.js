@@ -46,7 +46,7 @@ app.post('/message', function(req, res, next) {
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: `New order: ${req.body.message}.$0a***Please respond with ETA as numerical value in MINUTES.` // "%0a" encodes line break
+    body: `New order: ${req.body.message}.$0a*Please respond with ETA as numerical value in MINUTES.` // "%0a" encodes line break
     //'New Order Text Sent!'
   }).then(function(message) {
     // When we get a response from Twilio, respond to the HTTP POST request
@@ -123,8 +123,8 @@ app.post('/inbound', (req, res) => {
   const reminderTime = timeUntilReady - travelTime;
 
   consfirmTimeUntilDeparture(reminderTime); //send SMS to tbe customer when they should plan to leave once restaurant confirms order
-  //timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
-  timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
+  timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
+  //timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
 
   const twiml = new MessagingResponse();
   twiml.message('Thanks for confirming ETA!');
