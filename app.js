@@ -34,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // render home page
 app.get('/', function(req, res, next) {
+  console.log('from home!!****')
   res.render('index');
 });
 
