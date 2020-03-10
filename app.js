@@ -42,10 +42,11 @@ app.get('/', function(req, res, next) {
 //2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
+  console.log('button pressed')
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: `New order: ${req.body.message}.$0a***Please respond with ETA as numerical value in MINUTES.` // "%0a" encodes line break
+    body: `New order: ${req.body.message}.\nPlease respond with ETA as numerical value in MINUTES.` 
     //'New Order Text Sent!'
   }).then(function(message) {
     // When we get a response from Twilio, respond to the HTTP POST request
