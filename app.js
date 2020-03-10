@@ -44,7 +44,7 @@ app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
 
   console.log('button pressed');
-  console.log(req.body);
+  console.log(req);
 
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
