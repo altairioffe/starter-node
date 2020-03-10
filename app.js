@@ -124,8 +124,8 @@ app.post('/inbound', (req, res) => {
   const reminderTime = timeUntilReady - travelTime;
 
   consfirmTimeUntilDeparture(reminderTime); //send SMS to tbe customer when they should plan to leave once restaurant confirms order
-  //timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
-  timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
+  timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
+  //timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
 
   const twiml = new MessagingResponse();
   twiml.message('Thanks for confirming ETA!');
