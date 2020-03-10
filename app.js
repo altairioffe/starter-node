@@ -52,7 +52,7 @@ app.post('/message', function(req, res, next) {
     body: `New order: ${req.body.message}. Please respond with ETA as numerical value in MINUTES.` 
     //'New Order Text Sent!'
   }).then(function(message) {
-    // When we get a response from Twilio, respond to the HTTP POST request
+    console.log('this is the then message: ', message)
     res.redirect('/confirmed');
   });
 });
