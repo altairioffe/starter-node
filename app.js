@@ -95,6 +95,19 @@ const timedReminderToLeave = function(reminderTime) {
   }, reminderTime * 60000); // multiplies time until departure in minutes by 60000 to convert to milliseconds
 };
 
+const timedVoiceReminderToLeave = function(reminderTime) {
+
+  client.calls
+      .create({
+         twiml: '<You should leave now to pick up your order!</Say></Response>',
+         to: CUSTOMER_PHONE_NUMBER,
+         from: RESTAURANT_PHONE_NUMBER
+       })
+      .then(call => console.log(call.sid));
+}
+
+
+
 
 //LISTEN FOR SMS  **DO NOT CHANGE THIS ROUTE NAME** it is configured as the webhook in Twilio account
 app.post('/inbound', (req, res) => {
@@ -138,14 +151,13 @@ app.post('/voice', function(req, res, next) {
 
 
 
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
