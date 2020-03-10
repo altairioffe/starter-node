@@ -10,11 +10,13 @@ require('dotenv').config(); //to pull .env
 // nodemodules/twilio/lib/rest/Twilio.js
 
 // Load configuration information from system environment variables.
+
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN,
     TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER,
     CUSTOMER_PHONE_NUMBER= process.env.CUSTOMER_PHONE_NUMBER,
     RESTAURANT_PHONE_NUMBER = process.env.RESTAURANT_PHONE_NUMBER;
+
 
 // Create an authenticated client to access the Twilio REST API
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
@@ -33,15 +35,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // render home page
 app.get('/', function(req, res) {
-// console.log('FROM GITHUB!!')
+  console.log('FROM GITHUB!!')
   res.render('index');
 });
 
 
-
-//********************************
-//1. CUSTOMER HITS CONFIRM ORDER / PAYMENT, creates post request to /message; 2. SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
-app.post('/message', function(req, res) {
+//1. CUSTOMER HITS CONFIRM ORDER / PAYMENT, creates post request to /message
+//2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
+app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
@@ -55,7 +56,20 @@ app.post('/message', function(req, res) {
 });
 
 
-//**********************************
+// OR 2.2 SERVER handles a POST request to make an outbound call (sent via ajax on our home page)
+app.post('/call', function(req, res, next) {
+  // Use the REST client to send a text message
+  client.calls.create({
+    to: req.body.to,
+    from: TWILIO_PHONE_NUMBER,
+    url: 'http://demo.twilio.com/docs/voice.xml'
+  }).then(function(message) {
+    // When we get a response from Twilio, respond to the HTTP POST request
+    res.send('Call incoming!');
+  });
+});
+
+
 //RENDERS ORDER CONFIRMATION PAGE W MAP
 app.get('/confirmed', function(req, res, next) {
   res.render('confirmation');
@@ -71,6 +85,7 @@ const consfirmTimeUntilDeparture = function(reminderTime) {
     body: `You should leave to pick up your order in ${reminderTime} minutes!`
   }).then((message)=> console.log('from customer ETA .THEN ', message.body));
 };
+
 
 // Helper Function to send reminder SMS for customer to leave when timer is up:
 const timedReminderToLeave = function(reminderTime) {
@@ -101,7 +116,6 @@ const timedVoiceReminderToLeave = function(reminderTime) {
 
 
 
-//**********************************
 //LISTEN FOR SMS  **DO NOT CHANGE THIS ROUTE NAME** it is configured as the webhook in Twilio account
 app.post('/inbound', (req, res) => {
 
@@ -110,8 +124,8 @@ app.post('/inbound', (req, res) => {
   const reminderTime = timeUntilReady - travelTime;
 
   consfirmTimeUntilDeparture(reminderTime); //send SMS to tbe customer when they should plan to leave once restaurant confirms order
-  //timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
-  timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
+  timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
+  //timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
 
   const twiml = new MessagingResponse();
   twiml.message('Thanks for confirming ETA!');
@@ -125,8 +139,22 @@ app.post('/inbound', (req, res) => {
 
 
 
+// Create a TwiML document to provide instructions for an outbound call
+app.post('/voice', function(req, res, next) {
+  // Create a TwiML generator
+  const twiml = new twilio.twiml.VoiceResponse();
+  // const twiml = new twilio.TwimlResponse();
+  twiml.say('Do you like green eggs and ham?');
+  twiml.say('DO YOU LIKE THEM SAM I AM!', { 
+      voice:'alice' 
+  });
 
-//**********************************
+  // Return an XML response to this request
+  res.set('Content-Type','text/xml');
+  res.send(twiml.toString());
+});
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
