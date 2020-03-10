@@ -42,7 +42,10 @@ app.get('/', function(req, res, next) {
 //2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
-  console.log('button pressed')
+
+  console.log('button pressed');
+  console.log(req.body);
+
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
