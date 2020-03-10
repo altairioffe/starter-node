@@ -34,7 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // render home page
-app.get('/', function(req, res, next) {
+app.get('/', function(req, res) {
+  console.log('FROM GITHUB!!')
   res.render('index');
 });
 
