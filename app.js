@@ -10,7 +10,6 @@ require('dotenv').config(); //to pull .env
 // nodemodules/twilio/lib/rest/Twilio.js
 
 // Load configuration information from system environment variables.
-
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN,
     TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER,
@@ -26,19 +25,17 @@ const app = express();
 // view engine setup 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // render home page
-app.get('/', function(req, res) {
-  console.log('FROM GITHUB!!')
+app.get('/', function(req, res, next) {
   res.render('index');
 });
-
 
 //1. CUSTOMER HITS CONFIRM ORDER / PAYMENT, creates post request to /message
 //2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
@@ -47,14 +44,13 @@ app.post('/message', function(req, res, next) {
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: `New order: ${req.body.message}.\nPlease respond with ETA as numerical value in MINUTES.` // "%0a" encodes line break
+    body: `New order: ${req.body.message}.$0a***Please respond with ETA as numerical value in MINUTES.` // "%0a" encodes line break
     //'New Order Text Sent!'
   }).then(function(message) {
     // When we get a response from Twilio, respond to the HTTP POST request
     res.redirect('/confirmed');
   });
 });
-
 
 // OR 2.2 SERVER handles a POST request to make an outbound call (sent via ajax on our home page)
 app.post('/call', function(req, res, next) {
@@ -69,7 +65,6 @@ app.post('/call', function(req, res, next) {
   });
 });
 
-
 //RENDERS ORDER CONFIRMATION PAGE W MAP
 app.get('/confirmed', function(req, res, next) {
   res.render('confirmation');
@@ -78,7 +73,7 @@ app.get('/confirmed', function(req, res, next) {
 
 //Helper Function to send text reminding customer to leave CAN BE TEXT OR CALL
 const consfirmTimeUntilDeparture = function(reminderTime) {
-
+  
   client.messages.create({
     to: CUSTOMER_PHONE_NUMBER, 
     from: TWILIO_PHONE_NUMBER,
@@ -107,7 +102,7 @@ const timedVoiceReminderToLeave = function(reminderTime) {
   setTimeout(() => {
     client.calls
       .create({
-         twiml: '</Response><Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
+         twiml: '<You should leave now to pick up your order!</Say></Response>',
          to: CUSTOMER_PHONE_NUMBER,
          from: RESTAURANT_PHONE_NUMBER
       }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid));
@@ -125,7 +120,6 @@ app.post('/inbound', (req, res) => {
 
   consfirmTimeUntilDeparture(reminderTime); //send SMS to tbe customer when they should plan to leave once restaurant confirms order
   timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
-  //timedVoiceReminderToLeave(reminderTime); // starts timer that sends voice call to the customer when it's time to leave
 
   const twiml = new MessagingResponse();
   twiml.message('Thanks for confirming ETA!');
@@ -135,6 +129,7 @@ app.post('/inbound', (req, res) => {
 
   res.end(twiml.toString()); //end response process
 });
+
 
 
 
@@ -175,8 +170,9 @@ app.use(function(err, req, res) {
 module.exports = app;
 
 
-
 ////////
+
+
 // let order = {
 //   item: {
 //     quantity: 0
