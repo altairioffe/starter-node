@@ -108,9 +108,9 @@ const timedVoiceReminderToLeave = function(reminderTime) {
   setTimeout(() => {
     client.calls
       .create({
-         twiml: '<You should leave now to pick up your order!</Say></Response>',
+         twiml: '<Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
          to: CUSTOMER_PHONE_NUMBER,
-         from: RESTAURANT_PHONE_NUMBER
+         from: TWILIO_PHONE_NUMBER
       }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid));
   }, reminderTime * 60000);
 };
@@ -125,7 +125,8 @@ app.post('/inbound', (req, res) => {
   const reminderTime = timeUntilReady - travelTime;
 
   consfirmTimeUntilDeparture(reminderTime); //send SMS to tbe customer when they should plan to leave once restaurant confirms order
-  timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
+  //timedReminderToLeave(reminderTime);  //starts timer that sends SMS to the customer when it's time to leave
+  timedVoiceReminderToLeave(reminderTime);
 
   const twiml = new MessagingResponse();
   twiml.message('Thanks for confirming ETA!');
