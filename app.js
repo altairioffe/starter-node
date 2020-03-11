@@ -43,16 +43,16 @@ app.get('/', function(req, res, next) {
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
 
-  console.log('button pressed');
-  console.log(req.body.message);
-
+  console.log('1, button pressed');
+  console.log('2, ', req.body.message);
+  console.log('3, here is another')
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: 'New order ${req.body.message}. Please respond with ETA as numerical value in MINUTES.' 
+    body: 'New order. Please respond with ETA as numerical value in MINUTES.' 
   })
   .then(function(message) {
-    console.log('this is the then message: ', message)
+   // console.log('this is the then message: ', message);
     res.redirect('/confirmed');
   });
 });
