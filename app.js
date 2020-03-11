@@ -105,13 +105,20 @@ const timedReminderToLeave = function(reminderTime) {
 const timedVoiceReminderToLeave = function(reminderTime) {
   console.log(`timer started for ${reminderTime} minutes`);
 
+  client.calls
+  .create({
+     twiml: '<Response><Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
+     to: CUSTOMER_PHONE_NUMBER,
+     from: TWILIO_PHONE_NUMBER
+  }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid))
+  
   setTimeout(() => {
     client.calls
       .create({
          twiml: '<Response><Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
          to: CUSTOMER_PHONE_NUMBER,
          from: TWILIO_PHONE_NUMBER
-      }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid));
+      }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid))
   }, reminderTime * 60000);
 };
 
