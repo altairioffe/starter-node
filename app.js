@@ -7,7 +7,7 @@ const twilio = require('twilio');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 require('dotenv').config(); //to pull .env 
 
-// nodemodules/twilio/lib/rest/Twilio.js
+//nodemodules/twilio/lib/rest/Twilio.js
 
 // Load configuration information from system environment variables.
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID,
@@ -39,7 +39,7 @@ app.get('/', function(req, res, next) {
 });
 
 //1. CUSTOMER HITS CONFIRM ORDER / PAYMENT, creates post request to /message
-//2.1 SERVER handles a POST request to send SMS to restaurant (sent via ajax on our home page)
+//2.1 SERVER handles a POST request to send SMS to restaurant 
 app.post('/message', function(req, res, next) {
   // Use the REST client to send a text message
 
@@ -49,9 +49,9 @@ app.post('/message', function(req, res, next) {
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: `New order: ${req.body.message}. Please respond with ETA as numerical value in MINUTES.` 
-    //'New Order Text Sent!'
-  }).then(function(message) {
+    body: 'New order ${req.body.message}. Please respond with ETA as numerical value in MINUTES.' 
+  })
+  .then(function(message) {
     console.log('this is the then message: ', message)
     res.redirect('/confirmed');
   });
