@@ -54,7 +54,8 @@ app.post('/message', function(req, res, next) {
   .then(function(message) {
    // console.log('this is the then message: ', message);
     res.redirect('/confirmed');
-  });
+  })
+  .catch(error => res.status(500).send(error));
 });
 
 // OR 2.2 SERVER handles a POST request to make an outbound call (sent via ajax on our home page)
@@ -134,9 +135,6 @@ app.post('/inbound', (req, res) => {
 
   res.end(twiml.toString()); //end response process
 });
-
-
-
 
 
 // Create a TwiML document to provide instructions for an outbound call
@@ -345,10 +343,6 @@ module.exports = app;
 
 //   res.end(twiml.toString()); //end response process
 // });
-
-
-
-
 
 // // ERROR HANDLING
 // // **********************************
