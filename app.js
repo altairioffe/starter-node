@@ -111,7 +111,8 @@ const timedVoiceReminderToLeave = function(reminderTime) {
      to: CUSTOMER_PHONE_NUMBER,
      from: TWILIO_PHONE_NUMBER
   }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid))
-  
+
+  console.log('instant call triggered')
   setTimeout(() => {
     client.calls
       .create({
