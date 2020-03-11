@@ -49,7 +49,7 @@ app.post('/message', function(req, res, next) {
   client.messages.create({
     to: RESTAURANT_PHONE_NUMBER,
     from: TWILIO_PHONE_NUMBER,
-    body: 'New order. Please respond with ETA as numerical value in MINUTES.' 
+    body: `New order: ${req.body.message}.\nPlease respond with ETA as numerical value in MINUTES.`
   })
   .then(function(message) {
    // console.log('this is the then message: ', message);
