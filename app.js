@@ -108,7 +108,7 @@ const timedVoiceReminderToLeave = function(reminderTime) {
   setTimeout(() => {
     client.calls
       .create({
-         twiml: '<Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
+         twiml: '<Response><Say><You should leave now to pick up your order!</Say><Play>http://demo.twilio.com/docs/classic.mp3</Play></Response>',
          to: CUSTOMER_PHONE_NUMBER,
          from: TWILIO_PHONE_NUMBER
       }).then(call => console.log('REMINDER CALL TO LEAVE SENT: ',call.sid));
